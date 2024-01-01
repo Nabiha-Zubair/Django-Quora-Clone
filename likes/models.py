@@ -29,3 +29,6 @@ class Dislike(models.Model):
 
     def __str__(self):
         return f'{self.user.username} dislikes {self.content_type.model} #{self.object_id}'
+
+Like.opposite_model = Dislike
+Dislike.opposite_model = Like

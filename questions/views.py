@@ -9,29 +9,19 @@ from .models import Question
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
-  queryset = Question.objects.filter()
+  queryset = Question.get_questions_ordered_by_likes()
   serializer_class = QuestionSerializer
   permission_classes = [IsAuthenticated]
 
-  def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', True)
-        instance = self.get_object()
-
-        request_data = request.data.copy()
-        user_field = request_data.pop('user', None)
-
-        serializer = self.get_serializer(instance, data=request_data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if user_field is not None:
-            serializer.data['user'] = user_field
-
+  @action(detail=False, methods=['GET'])
+  def user_questions(self, request):
+        user_questions = self.queryset.filter(user=request.user)
+        serializer = self.get_serializer(user_questions, many=True)
         return Response(serializer.data)
 
   @action(detail=False, methods=['GET'])
-  def user_questions(self, request):
-        # Retrieve questions for the current user
-        user_questions = self.queryset.filter(user=request.user)
-        serializer = self.get_serializer(user_questions, many=True)
+  def topic_questions(self, request, *args, **kwargs):
+        topic_id = self.kwargs['topic_id']
+        topic_questions = self.queryset.filter(topics__id=topic_id)        
+        serializer = self.get_serializer(topic_questions, many=True)
         return Response(serializer.data)

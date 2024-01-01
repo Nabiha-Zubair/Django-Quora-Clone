@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "authentication",
     "topic",
     "questions",
+    "answers",
     "likes"
 ]
 REST_FRAMEWORK = {
