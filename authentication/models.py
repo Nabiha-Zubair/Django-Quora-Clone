@@ -35,6 +35,9 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['first_name', 'last_name']
+        indexes = [
+            models.Index(fields=['id']),
+        ]
 
     def __str__(self):
         return self.email

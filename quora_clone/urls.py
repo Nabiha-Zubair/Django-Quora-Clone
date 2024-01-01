@@ -7,5 +7,7 @@ urlpatterns = [
     path("auth/", include('authentication.urls')),
     path("topic/", include('topic.urls')),
     path("question/", include('questions.urls')),
+    path("like/", include('likes.urls')),
+
 
 ]

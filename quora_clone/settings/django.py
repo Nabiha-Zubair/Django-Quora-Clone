@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "authentication",
     "topic",
-    "questions"
+    "questions",
+    "likes"
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

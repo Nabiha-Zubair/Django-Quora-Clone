@@ -18,6 +18,9 @@ class Topic(models.Model):
 
     class Meta:
       ordering = ['title']
+      indexes = [
+            models.Index(fields=['title']),
+        ]
     
     def __str__(self):
       return self.title

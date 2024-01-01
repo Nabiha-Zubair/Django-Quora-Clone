@@ -23,6 +23,8 @@ from .helpers import generate_token, get_tokens_for_user
 from .permissions import CheckAuthenticatedUser
 from .models import User
 from .auth.custom_auth import CustomAuthentication
+
+
 class EmailThread(threading.Thread):
 
     def __init__(self, email):
@@ -138,7 +140,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=200)
