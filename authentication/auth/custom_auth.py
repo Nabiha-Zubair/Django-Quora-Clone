@@ -6,8 +6,6 @@ import logging
 from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
-print("Custom JWT Authentication class is being executed.")
-
 
 class CustomAuthentication(JWTAuthentication):
 
