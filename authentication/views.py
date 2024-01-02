@@ -3,6 +3,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
+from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
@@ -56,6 +57,13 @@ def send_activation_email(user, requestuest):
         raise e
 
 
+@api_view(['GET'])
+def get_csrf_token(request):
+    response = Response({"message": "Set CSRF cookie"})
+    response["X-CSRFToken"] = get_token(request)
+    return response
+
+
 @csrf_exempt
 @api_view(['POST'])
 def signupView(request):
@@ -73,7 +81,7 @@ def signupView(request):
             return Response({'message': 'Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@csrf_exempt
+# @csrf_exempt
 @api_view(['POST'])
 def loginView(request):
 
@@ -94,7 +102,15 @@ def loginView(request):
             serializer = UserModelSerializer(user)
             token = get_tokens_for_user(user)
             login(request, user)
-            return Response({'message': 'Login successful', 'user': serializer.data, 'token': token}, status=status.HTTP_200_OK)
+            print('token: ', token['access'])
+            response_data = {
+                'message': 'Login successful',
+                'user': serializer.data,
+                'token': token,
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+            # return response.set_cookie("access_token", token['access'], httponly=True)
+
         except Exception as e:
             print(e)
             return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

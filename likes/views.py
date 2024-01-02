@@ -102,6 +102,7 @@ from .helpers import get_content_type
 class BaseReactionViewSet(viewsets.ModelViewSet):
     serializer_class = None
     model_class = None
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         object_id = request.data.get('object_id')
@@ -114,18 +115,12 @@ class BaseReactionViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Invalid model name'}, status=status.HTTP_400_BAD_REQUEST)
 
         opposite_model = self.model_class.opposite_model
-        print('jhj:', opposite_model)
-
         opposite_reaction = opposite_model.objects.filter(
             user=request.user,
             content_type=content_type,
             object_id=object_id
         )
-
-        print('jhj:', opposite_reaction)
-
         if opposite_reaction:
-            print('react: ', opposite_reaction)
             opposite_reaction.delete()
 
         user_reaction, created = self.model_class.objects.get_or_create(
