@@ -21,7 +21,6 @@ import threading
 
 from .serializer import UserModelSerializer
 from .helpers import generate_token, get_tokens_for_user
-from .permissions import CheckAuthenticatedUser
 from .models import User
 from .auth.custom_auth import CustomAuthentication
 

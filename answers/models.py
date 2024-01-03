@@ -10,7 +10,7 @@ from likes.models import Like, Dislike
 
 class Answer(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     content = models.TextField(max_length=255, validators=[MinLengthValidator(
         limit_value=3, message='Title must be at least 3 characters long.')])
     likes = GenericRelation(Like, related_query_name='likes')
@@ -18,9 +18,6 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"{self.content[:50]}"
-
-    # def topic(self):
-    #     return ",".join([str(t) for t in self.topics.all()])
 
     @classmethod
     def get_answers_ordered_by_likes(cls):

@@ -15,6 +15,7 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [LikeInline]
     list_display = ['id', 'content', 'user_name', 'topic_id', 'topic', 'likes']
 
+    @admin.display(ordering='likes')
     def likes(self, obj):
         return obj.likes.count()
 
