@@ -34,7 +34,6 @@ class Question(models.Model):
     @classmethod
     def get_questions_ordered_by_likes(cls):
         questions_with_likes = cls.objects.annotate(likes_count=Count('likes'))
-        
 
         # Order questions by likes count
         ordered_questions = questions_with_likes.order_by('-likes_count')

@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import Like, Dislike
 
+
 class ReactionAdminMixin(admin.ModelAdmin):
     list_display = ['id', 'reaction_object',
                     'reaction_object_id', 'category', 'user']

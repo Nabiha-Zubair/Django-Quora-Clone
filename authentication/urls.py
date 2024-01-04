@@ -22,6 +22,8 @@ urlpatterns = [
     path('activate-user/<uidb64>/<token>',
          activate_user, name='activate'),
     path('api/', include(router.urls)),
+    path('api/users/current',
+         UserViewSet.as_view({'get': 'get_current_user'})),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 

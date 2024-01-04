@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -33,7 +34,6 @@ class EmailThread(threading.Thread):
 
     def run(self):
         self.email.send()
-        print('email sent:')
 
 
 def send_activation_email(user, requestuest):
@@ -63,7 +63,6 @@ def get_csrf_token(request):
     return response
 
 
-@csrf_exempt
 @api_view(['POST'])
 def signupView(request):
     if request.method == 'POST':
@@ -76,11 +75,8 @@ def signupView(request):
                 return Response({'message': 'Signup successful', 'user': serializer.data}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_requestUEST)
         except Exception as e:
-            print(e)
             return Response({'message': 'Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-# @csrf_exempt
 @api_view(['POST'])
 def loginView(request):
 
@@ -101,7 +97,6 @@ def loginView(request):
             serializer = UserModelSerializer(user)
             token = get_tokens_for_user(user)
             login(request, user)
-            print('token: ', token['access'])
             response_data = {
                 'message': 'Login successful',
                 'user': serializer.data,
@@ -111,7 +106,6 @@ def loginView(request):
             # return response.set_cookie("access_token", token['access'], httponly=True)
 
         except Exception as e:
-            print(e)
             return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -145,12 +139,10 @@ def activate_user(requestuest, uidb64, token):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    authentication_classes = [CustomAuthentication]
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserModelSerializer
     parser_classes = [MultiPartParser, FormParser]
-
-    # permission_classes = [CheckAuthenticatedUser]
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)
@@ -159,4 +151,10 @@ class UserViewSet(viewsets.ModelViewSet):
             instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['GET'])
+    def get_current_user(self, request):
+        current_user = request.user
+        serializer = self.get_serializer(current_user)
+        return Response({'user_id': serializer.data['id']}, status=status.HTTP_200_OK)

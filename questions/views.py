@@ -1,28 +1,24 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from django.db.models import Count
-from django.db.models import Prefetch
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser
 
 
 from .serializer import QuestionSerializer
 from .models import Question
 from authentication.permissions import CanDeleteOwnObject
-from answers.models import Answer
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.get_questions_ordered_by_likes()
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CanDeleteOwnObject]
 
     def list(self, request):
-        questions_with_answers = Question.objects.prefetch_related(
-            'answers').all()
-
-        serializer = self.get_serializer(questions_with_answers, many=True)
+        questions_with_answers_and_likes = self.queryset.prefetch_related(
+            'answers', 'likes', 'dislikes').all()
+        serializer = self.get_serializer(
+            questions_with_answers_and_likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
