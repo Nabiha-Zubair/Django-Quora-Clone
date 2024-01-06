@@ -9,6 +9,8 @@ urlpatterns = [
     path("question/", include('questions.urls')),
     path("answer/", include('answers.urls')),
     path("like/", include('likes.urls')),
+    path("following/", include('following.urls')),
+
 
 
 ]

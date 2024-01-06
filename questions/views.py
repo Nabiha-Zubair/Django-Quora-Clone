@@ -20,33 +20,14 @@ class QuestionViewSet(viewsets.ModelViewSet):
             'answers', 'likes', 'dislikes').all()
         return questions_with_answers_and_likes
 
-    # def list(self, request):
-    #     questions_with_answers_and_likes = self.queryset.prefetch_related(
-    #         'answers', 'likes', 'dislikes').all()
-
-    #     page = self.paginate_queryset(
-    #         questions_with_answers_and_likes)
-
-    #     if page is not None:
-    #         serializer = self.get_serializer(page, many=True)
-    #         return self.get_paginated_response(serializer.data)
-
-    #     serializer = self.get_serializer(
-    #         questions_with_answers_and_likes, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        print('dede: ', queryset)
-        # If you use pagination, you can proceed with the existing logic
         page = self.paginate_queryset(queryset)
 
         if page is not None:
-            print('yes pages')
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        # Your existing pagination response logic
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -12,10 +12,29 @@ from authentication.permissions import CanDeleteOwnObject
 
 
 class TopicViewSet(viewsets.ModelViewSet):
-    queryset = Topic.objects.filter()
+    queryset = Topic.objects.all()
     serializer_class = TopicSerializer
-    permission_classes = [IsAuthenticated, CanDeleteOwnObject]
+    # permission_classes = [IsAuthenticated, CanDeleteOwnObject]
     parser_classes = [MultiPartParser, FormParser]
+
+    def get_queryset(self):
+        topic_with_followers = self.queryset.prefetch_related(
+            'followers').all()
+        # print('query prefetch: ', topic_with_followers[2].followers.all())
+        return topic_with_followers
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        print('query prefetchs: ', queryset[2].followers.all())
+
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
 
@@ -43,7 +62,3 @@ class TopicViewSet(viewsets.ModelViewSet):
             serializer.data['user'] = user_field
 
         return Response(serializer.data)
-
-        
-
-      

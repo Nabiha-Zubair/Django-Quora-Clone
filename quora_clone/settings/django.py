@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "topic",
     "questions",
     "answers",
-    "likes"
+    "likes",
+    "following"
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -71,7 +72,7 @@ CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = "quora_clone.urls"
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
 }
