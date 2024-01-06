@@ -6,4 +6,4 @@ class TopicConfig(AppConfig):
     name = "topic"
 
     def ready(self):
-        import topic.signals 
+        import topic.signals
