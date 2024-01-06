@@ -77,6 +77,7 @@ def signupView(request):
         except Exception as e:
             return Response({'message': 'Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(['POST'])
 def loginView(request):
 
@@ -156,5 +157,8 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def get_current_user(self, request):
         current_user = request.user
+        if not current_user:
+            return Response({'message': ''}, status=status.HTTP_401_UNAUTHORIZED)
+
         serializer = self.get_serializer(current_user)
-        return Response({'user_id': serializer.data['id']}, status=status.HTTP_200_OK)
+        return Response({'user': serializer.data}, status=status.HTTP_200_OK)

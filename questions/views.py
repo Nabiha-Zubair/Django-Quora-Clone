@@ -12,13 +12,42 @@ from authentication.permissions import CanDeleteOwnObject
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.get_questions_ordered_by_likes()
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated, CanDeleteOwnObject]
+    # permission_classes = [IsAuthenticated, CanDeleteOwnObject]
 
-    def list(self, request):
+    def get_queryset(self):
+        # Your additional logic
         questions_with_answers_and_likes = self.queryset.prefetch_related(
             'answers', 'likes', 'dislikes').all()
-        serializer = self.get_serializer(
-            questions_with_answers_and_likes, many=True)
+        return questions_with_answers_and_likes
+
+    # def list(self, request):
+    #     questions_with_answers_and_likes = self.queryset.prefetch_related(
+    #         'answers', 'likes', 'dislikes').all()
+
+    #     page = self.paginate_queryset(
+    #         questions_with_answers_and_likes)
+
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+
+    #     serializer = self.get_serializer(
+    #         questions_with_answers_and_likes, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        print('dede: ', queryset)
+        # If you use pagination, you can proceed with the existing logic
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            print('yes pages')
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        # Your existing pagination response logic
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
@@ -40,7 +69,12 @@ class QuestionViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def topic_questions(self, request, *args, **kwargs):
         topic_id = self.kwargs['topic_id']
-        topic_questions = self.queryset.filter(topics__id=topic_id)
+        query = self.get_queryset()
+        topic_questions = query.filter(topics__id=topic_id)
+        page = self.paginate_queryset(topic_questions)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(topic_questions, many=True)
-        serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
