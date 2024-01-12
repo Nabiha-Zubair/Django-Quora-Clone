@@ -14,7 +14,7 @@ from authentication.permissions import CanDeleteOwnObject
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
-    # permission_classes = [IsAuthenticated, CanDeleteOwnObject]
+    permission_classes = [IsAuthenticated, CanDeleteOwnObject]
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):

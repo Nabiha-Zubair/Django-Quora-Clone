@@ -12,7 +12,7 @@ from authentication.permissions import CanDeleteOwnObject
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.get_questions_ordered_by_likes()
     serializer_class = QuestionSerializer
-    # permission_classes = [IsAuthenticated, CanDeleteOwnObject]
+    permission_classes = [IsAuthenticated, CanDeleteOwnObject]
 
     def get_queryset(self):
         # Your additional logic

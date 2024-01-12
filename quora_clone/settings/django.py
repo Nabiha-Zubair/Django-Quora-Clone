@@ -4,17 +4,10 @@ import sys
 from decouple import config
 from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-$tpy(q6^vw(+1&7*x6qd3qn9^20(@###y1+_i-4)@h4rz-=qri"
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -23,8 +16,6 @@ AUTH_USER_MODEL = 'authentication.User'
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
 
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -100,10 +91,26 @@ WSGI_APPLICATION = "quora_clone.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": BASE_DIR / "db.sqlite3",
+    # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'Quora',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'dev1690',
+    #     'HOST': 'localhost',  # Set to the address where PostgreSQL is running
+    #     'PORT': '5433',       # Set to the port where PostgreSQL is running
+    # }
 }
 
 
