@@ -25,7 +25,6 @@ class TopicViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        print('query prefetchs: ', queryset[2].followers.all())
 
         page = self.paginate_queryset(queryset)
 
