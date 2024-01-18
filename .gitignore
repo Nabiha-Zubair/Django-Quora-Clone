@@ -1,3 +1,6 @@
 .env
 /quora_clone/media
 /quora_clone/static
+
+**/migrations/__pycache__/
+__pycache__/
