@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
-  django-app:
+  quora-clone-app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,3 +33,12 @@ services:
       - postgres
     volumes:
       - .:/app
+
+  nginx: 
+      build:
+        context: ./nginx
+        dockerfile: Dockerfile
+      container_name: ngnix
+      ports:
+        - "80:80"
+

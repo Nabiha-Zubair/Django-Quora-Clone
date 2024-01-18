@@ -10,7 +10,7 @@ SECRET_KEY = "django-insecure-$tpy(q6^vw(+1&7*x6qd3qn9^20(@###y1+_i-4)@h4rz-=qri
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 AUTH_USER_MODEL = 'authentication.User'
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
@@ -154,7 +154,9 @@ EMAIL_PORT = 587
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
